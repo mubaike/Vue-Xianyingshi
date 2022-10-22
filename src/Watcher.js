@@ -7,6 +7,8 @@ export default class Watcher {
         this.id = uid++;
         this.target = target;
         this.getter = parsePath(expression);
+        this.callback = callback;
+        this.value = this.get();
     }
     update() {
         this.run();
@@ -21,7 +23,7 @@ export default class Watcher {
 
         //只要能找，就一直找
         try {
-            this.getter(obj);
+            value = this.getter(obj);
         } finally {
             Dep.target = null;
         }
@@ -31,13 +33,25 @@ export default class Watcher {
     run() {
         this.getAndInvoke(this.callback);
     }
-    getAndInvoke (cd) {
+    getAndInvoke(cd) {
         const value = this.get();
 
-        if(value !== this.value || typeof value == 'object') {
+        if (value !== this.value || typeof value == 'object') {
             const oldValue = this.value;
             this.value = value;
             cd.call(this.target, value, oldValue);
         }
     }
+};
+
+function parsePath(str) {
+    var segments = str.split('.');
+
+    return (obj) => {
+        for(let i = 0; i < segments.length; i++) {
+            if(!obj) return;
+            obj = obj[segments[i]]
+        }
+        return obj;
+    };
 }

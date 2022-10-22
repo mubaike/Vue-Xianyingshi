@@ -38,6 +38,7 @@ export default function defineReactive(data, key, val) {
             val = newValue;
             //当设置了新值，这个新值也要被observe
             childOb = observe(newValue);
+            dep.notify();
         }
     });
 }

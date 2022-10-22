@@ -13,6 +13,10 @@ var obj = {
 
 
 observe(obj);
-obj.a = 10;
-obj.c.push(1);
+new Watcher(obj, 'a.m.n', (val) => {
+    console.log('aaaa',val);
+});
+
+obj.a.m.n = 88;
+
 
